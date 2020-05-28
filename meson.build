@@ -53,7 +53,7 @@ headers = files([
   'fidoconf/version.h'
 ])
 
-incdir = include_directories('fidoconf')
+incdir = include_directories(['fidoconf','.'])
 smapi_proj = subproject('smapi')
 smapi_dep=smapi_proj.get_variable('smapi_dep')
 
