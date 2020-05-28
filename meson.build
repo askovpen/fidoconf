@@ -69,3 +69,9 @@ fidoconf_dep = declare_dependency(
   include_directories : incdir)
 
 install_headers(headers, subdir: 'fidoconf')
+
+pkg = import('pkgconfig')
+
+pkg.generate(libfidoconf,
+             name: 'fidoconf',
+             description: 'fidoconf is a support library of Husky project for parsing and manipulating config files')
