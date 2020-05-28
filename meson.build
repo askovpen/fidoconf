@@ -5,6 +5,10 @@ cc = meson.get_compiler('c')
 link_args = []
 compile_args = []
 
+  add_project_arguments(
+   '-I'+meson.current_source_dir()+'/fidoconf',
+    language : 'c')
+
 if cc.get_id() == 'msvc'
   add_project_arguments(
     '-D_CRT_SECURE_NO_DEPRECATE',
@@ -16,10 +20,11 @@ if cc.get_id() == 'msvc'
   if get_option('default_library') != 'static'
     add_project_arguments('-D_DLL', '-D_MAKE_DLL', language : 'c')
   endif
-
 else
   add_project_arguments(
+    '-DNDEBUG',
     '-DUNIX',
+    '-DCFGDIR="'+get_option('cfgdir')+'"',
   language : 'c')
 endif
 
@@ -53,7 +58,8 @@ headers = files([
   'fidoconf/version.h'
 ])
 
-incdir = include_directories(['fidoconf','.'])
+incdir = include_directories(['.'])
+
 smapi_proj = subproject('smapi')
 smapi_dep=smapi_proj.get_variable('smapi_dep')
 
@@ -61,6 +67,12 @@ libfidoconf = library('fidoconfig', src,
   include_directories : incdir,
   dependencies:[smapi_dep],
   version:'1.9.0',
+  install : true)
+
+executable('tparser',files(['src/tparser.c']),
+  include_directories : incdir,
+  dependencies:[smapi_dep],
+  link_with: [libfidoconf],
   install : true)
 
 fidoconf_dep = declare_dependency(
